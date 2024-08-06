@@ -21,6 +21,7 @@ body{
 h1{
     border-bottom: 2px solid red;
     margin: 21px auto;
+    max-width: max-content;
 }
 
 .input , .btn{
@@ -35,7 +36,6 @@ h1{
     margin: 21px auto;
     padding: 8px;
     border-radius: 8px;
-    max-width: max-content;
     outline: none;
 }
 
