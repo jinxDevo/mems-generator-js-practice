@@ -1,42 +1,20 @@
 const inputElement = document.querySelector("input");
 const sendBtn = document.querySelector("button");
-const errorOutput = document.querySelector(".error-output");
-const captionElement = document.querySelector(".caption");
-const imgElement = document.querySelector(".img");
+const outputElement = document.querySelector(".output")
 
-sendBtn.addEventListener("click", () => {
-  if (
-    !isNaN(inputElement.value) &&
-    inputElement.value > 0 &&
-    inputElement.value < 99
-  ) {
-    getImage();
-  } else {
-    errorOutput.innerHTML =
-      inputElement.value > 99 || inputElement.value <= 0
-        ? "number must be between 0 to 99"
-        : "Not A Number";
+sendBtn.addEventListener("click", async () => {
+  outputElement.innerHTML = isNaN(inputElement.value) ? `<p>Not A Number</p>` : ""
+  if(!(inputElement.value > 99 || inputElement.value <= 0)){
+    const res = fetch(`https://api.imgflip.com/get_memes`)
+    res.then(res => res.json())
+        .then(data =>
+            { const memes = data.data.memes[inputElement.value]
+              outputElement.innerHTML = `
+              <p>${memes.name}</p>
+              <img src=${memes.url} width=${memes.width} height=${memes.height}/>
+            `}
+            )
+  }else{
+    outputElement.innerHTML = `<p>Number must be between 0 to 99</p>`
   }
 });
-
-async function getImage() {
-  try {
-    const res = await fetch("https://api.imgflip.com/get_memes");
-    if (!res.ok) {
-      throw "response status" + res.status;
-    }
-
-    const data = await res.json();
-    const { width, height, id, name, url } =
-      data.data.memes[inputElement.value];
-
-    captionElement.innerText = name;
-    imgElement.src = url;
-    imgElement.alt = name;
-    imgElement.width = width;
-    imgElement.height = height;
-    imgElement.id = id;
-  } catch (e) {
-    alert("error : " + e);
-  }
-}
